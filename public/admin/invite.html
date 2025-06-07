@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>دعوة Netlify CMS - Arabia Web Craft</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+      background-color: #f7fafc;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 500px;
+      padding: 40px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    
+    h1 {
+      font-family: 'Cairo', sans-serif;
+      color: #2d3748;
+      margin-bottom: 20px;
+    }
+    
+    p {
+      color: #4a5568;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    
+    .button {
+      background-color: #4299e1;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .button:hover {
+      background-color: #3182ce;
+    }
+    
+    .logo {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+    
+    .message {
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    
+    .success {
+      background-color: #c6f6d5;
+      color: #2f855a;
+    }
+    
+    .error {
+      background-color: #fed7d7;
+      color: #c53030;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="/uploads/logo.png" alt="Arabia Web Craft" class="logo" onerror="this.src='/admin/logo-placeholder.png'; this.onerror=null;">
+    <h1>مرحبًا بك في لوحة تحكم Arabia Web Craft</h1>
+    <div id="message" style="display: none;" class="message"></div>
+    <p>تم دعوتك للوصول إلى لوحة تحكم الموقع. يرجى إكمال عملية التسجيل لبدء إدارة محتوى الموقع.</p>
+    <div id="netlify-identity-widget"></div>
+    <p id="redirect-message" style="display: none;">جاري تحويلك إلى لوحة التحكم...</p>
+  </div>
+
+  <script>
+    // التحقق من وجود رمز الدعوة أو التأكيد
+    function getTokenFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      
+      return {
+        inviteToken: urlParams.get('invite_token') || hashParams.get('invite_token'),
+        confirmationToken: urlParams.get('confirmation_token') || hashParams.get('confirmation_token')
+      };
+    }
+    
+    // عرض رسالة للمستخدم
+    function showMessage(text, type) {
+      const messageEl = document.getElementById('message');
+      messageEl.textContent = text;
+      messageEl.className = `message ${type}`;
+      messageEl.style.display = 'block';
+    }
+    
+    // معالجة الدعوة
+    function handleInvite() {
+      const tokens = getTokenFromUrl();
+      
+      if (!tokens.inviteToken && !tokens.confirmationToken) {
+        showMessage('لم يتم العثور على رمز دعوة صالح. يرجى التحقق من الرابط المرسل إليك.', 'error');
+        return;
+      }
+      
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on('init', user => {
+          if (!user) {
+            // إذا كان هناك رمز تأكيد، فقم بتأكيد المستخدم
+            if (tokens.confirmationToken) {
+              window.netlifyIdentity.confirm(tokens.confirmationToken);
+            } 
+            // إذا كان هناك رمز دعوة، افتح نافذة الدعوة
+            else if (tokens.inviteToken) {
+              window.netlifyIdentity.open('signup');
+            }
+          } else {
+            // المستخدم مسجل دخول بالفعل، قم بالتوجيه إلى لوحة التحكم
+            document.getElementById('redirect-message').style.display = 'block';
+            setTimeout(() => {
+              window.location.href = '/admin/';
+            }, 2000);
+          }
+        });
+        
+        // عند اكتمال تسجيل الدخول، قم بالتوجيه إلى لوحة التحكم
+        window.netlifyIdentity.on('login', () => {
+          document.getElementById('redirect-message').style.display = 'block';
+          setTimeout(() => {
+            window.location.href = '/admin/';
+          }, 2000);
+        });
+        
+        // عند حدوث خطأ
+        window.netlifyIdentity.on('error', err => {
+          console.error('Netlify Identity error:', err);
+          showMessage('حدث خطأ أثناء معالجة الدعوة. يرجى المحاولة مرة أخرى أو الاتصال بمسؤول الموقع.', 'error');
+        });
+      } else {
+        showMessage('لم يتم تحميل Netlify Identity بشكل صحيح. يرجى تحديث الصفحة أو الاتصال بمسؤول الموقع.', 'error');
+      }
+    }
+    
+    // انتظر تحميل الصفحة بالكامل
+    document.addEventListener('DOMContentLoaded', handleInvite);
+  </script>
+</body>
+</html>
+

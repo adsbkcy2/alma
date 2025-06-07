@@ -1,0 +1,437 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>لوحة تحكم المحتوى - Arabia Web Craft</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^2.0.0/dist/cms.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+    }
+    .nc-app-header-logo {
+      font-family: 'Cairo', sans-serif;
+    }
+    
+    /* تحسين واجهة تسجيل الدخول */
+    .netlify-identity-widget {
+      font-family: 'Tajawal', sans-serif !important;
+      direction: rtl !important;
+    }
+    
+    .netlify-identity-widget-modal {
+      font-family: 'Tajawal', sans-serif !important;
+      direction: rtl !important;
+    }
+    
+    /* إصلاح مشكلة عدم ظهور حقول كلمة المرور */
+    .netlify-identity-widget input[type="password"] {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    .netlify-identity-widget .form-group {
+      display: block !important;
+      margin-bottom: 1rem !important;
+    }
+
+    /* تحسين واجهة المستخدم */
+    .nc-app-header {
+      background-color: #1a202c;
+    }
+
+    .nc-app-header-content {
+      color: white;
+    }
+
+    .nc-app-header-logo {
+      color: white;
+      font-weight: bold;
+    }
+
+    /* تحسين أزرار الإجراءات */
+    .nc-appHeader-button {
+      background-color: #4a5568;
+      color: white;
+      border-radius: 4px;
+      padding: 8px 12px;
+      transition: background-color 0.3s;
+    }
+
+    .nc-appHeader-button:hover {
+      background-color: #2d3748;
+    }
+
+    /* تحسين نموذج التحرير */
+    .nc-entryEditor-container {
+      padding: 20px;
+      background-color: #f7fafc;
+      border-radius: 8px;
+    }
+
+    /* تحسين حقول الإدخال */
+    .nc-controlPane-widget input,
+    .nc-controlPane-widget textarea,
+    .nc-controlPane-widget select {
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 8px 12px;
+      width: 100%;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    /* تحسين أزرار الحفظ والنشر */
+    .nc-entryEditor-toolbar {
+      background-color: #edf2f7;
+      border-radius: 4px;
+      padding: 10px;
+    }
+
+    .nc-entryEditor-toolbar button {
+      background-color: #4299e1;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-family: 'Tajawal', sans-serif;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .nc-entryEditor-toolbar button:hover {
+      background-color: #3182ce;
+    }
+
+    /* تحسين محرر النصوص */
+    .nc-controlPane-widget .CodeMirror {
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* تحسين عرض الصور */
+    .nc-mediaLibrary-cardImage {
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* تحسين القوائم */
+    .nc-collectionPage-sidebar {
+      background-color: #f7fafc;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    /* تحسين الرسائل */
+    .nc-notification {
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <!-- إضافة div للتأكد من تحميل netlify identity widget بشكل صحيح -->
+  <div data-netlify-identity-menu></div>
+  
+  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  <script>
+    // التحقق من رابط الدعوة وإعادة التوجيه
+    function checkInviteLink() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      
+      const inviteToken = urlParams.get('invite_token') || hashParams.get('invite_token');
+      const confirmationToken = urlParams.get('confirmation_token') || hashParams.get('confirmation_token');
+      
+      if (inviteToken || confirmationToken) {
+        console.log('تم العثور على رابط دعوة، إعادة توجيه لصفحة الدعوة');
+        // إعادة توجيه لصفحة الدعوة مع الحفاظ على البارامترات
+        window.location.href = '/admin/invite.html' + window.location.search + window.location.hash;
+        return true;
+      }
+      return false;
+    }
+
+    // التحقق من رابط الدعوة قبل تهيئة أي شيء آخر
+    if (checkInviteLink()) {
+      // توقف هنا إذا كان هناك رابط دعوة
+    } else {
+      // متابعة التحميل العادي
+      // التأكد من تحميل Netlify Identity Widget
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", user => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => {
+              document.location.href = "/admin/";
+            });
+          }
+        });
+      }
+
+      window.CMS_MANUAL_INIT = true;
+      
+      // إعداد اللغة العربية
+      const locale = {
+        auth: {
+          login: 'تسجيل دخول',
+          loggingIn: 'جاري تسجيل الدخول...',
+          loginWithNetlifyIdentity: 'تسجيل الدخول باستخدام Netlify',
+          loginWithBitbucket: 'تسجيل الدخول باستخدام Bitbucket',
+          loginWithGitHub: 'تسجيل الدخول باستخدام GitHub',
+          loginWithGitLab: 'تسجيل الدخول باستخدام GitLab',
+          errors: {
+            email: 'تأكد من إدخال بريد إلكتروني صحيح',
+            password: 'يرجى إدخال كلمة المرور',
+            identitySettings: 'تعذر الوصول لإعدادات الهوية. عند استخدام git-gateway backend تأكد من تفعيل خدمة Identity وGit Gateway.'
+          }
+        },
+        app: {
+          header: {
+            content: 'محتوى',
+            workflow: 'سير العمل',
+            media: 'وسائط',
+            quickAdd: 'إضافة سريعة'
+          },
+          app: {
+            errorHeader: 'خطأ في تحميل تكوين CMS',
+            configErrors: 'أخطاء التكوين',
+            checkConfigYml: 'تحقق من ملف config.yml الخاص بك.',
+            loadingConfig: 'جاري تحميل التكوين...',
+            waitingBackend: 'في انتظار الخادم...'
+          },
+          notFoundPage: {
+            header: 'غير موجود'
+          }
+        },
+        collection: {
+          sidebar: {
+            collections: 'المجموعات',
+            searchAll: 'بحث في الكل'
+          },
+          collectionTop: {
+            viewAs: 'عرض كـ',
+            newButton: 'جديد %{collectionLabel}'
+          },
+          entries: {
+            loadingEntries: 'جاري تحميل المدخلات...',
+            cachingEntries: 'جاري تخزين المدخلات...',
+            longerLoading: 'قد يستغرق هذا عدة دقائق',
+            noEntries: 'لا توجد مدخلات'
+          },
+          defaultFields: {
+            author: {
+              label: 'المؤلف'
+            },
+            updatedOn: {
+              label: 'تم التحديث في'
+            }
+          }
+        },
+        editor: {
+          editorControl: {
+            field: {
+              optional: 'اختياري'
+            }
+          },
+          editorControlPane: {
+            widget: {
+              required: '%{fieldLabel} مطلوب.',
+              regexPattern: '%{fieldLabel} لا يتطابق مع النمط: %{pattern}.',
+              processing: 'جاري معالجة %{fieldLabel}.',
+              range: '%{fieldLabel} يجب أن يكون بين %{minValue} و %{maxValue}.',
+              min: '%{fieldLabel} يجب أن يكون على الأقل %{minValue}.',
+              max: '%{fieldLabel} يجب أن يكون %{maxValue} أو أقل.',
+              rangeCount: '%{fieldLabel} يجب أن يكون بين %{minCount} و %{maxCount} عنصر.',
+              rangeCountExact: '%{fieldLabel} يجب أن يكون بالضبط %{count} عنصر.',
+              minCount: '%{fieldLabel} يجب أن يكون على الأقل %{minCount} عنصر.',
+              maxCount: '%{fieldLabel} يجب أن يكون %{maxCount} عنصر أو أقل.',
+              invalidPath: "'%{path}' ليس مسارًا صالحًا",
+              pathExists: "المسار '%{path}' موجود بالفعل"
+            }
+          },
+          editor: {
+            onLeavePage: 'هل أنت متأكد أنك تريد ترك هذه الصفحة؟',
+            onUpdatingWithUnsavedChanges: 'لديك تغييرات غير محفوظة، يرجى الحفظ قبل التحديث.',
+            onPublishingNotReady: 'يرجى تحديث الحالة إلى "جاهز" قبل النشر.',
+            onPublishingWithUnsavedChanges: 'لديك تغييرات غير محفوظة، يرجى الحفظ قبل النشر.',
+            onPublishing: 'هل أنت متأكد أنك تريد نشر هذا الإدخال؟',
+            onUnpublishing: 'هل أنت متأكد أنك تريد إلغاء نشر هذا الإدخال؟',
+            onDeleteWithUnsavedChanges: 'هل أنت متأكد أنك تريد حذف هذا الإدخال المنشور وكذلك التغييرات غير المحفوظة من الجلسة الحالية؟',
+            onDeletePublishedEntry: 'هل أنت متأكد أنك تريد حذف هذا الإدخال المنشور؟',
+            onDeleteUnpublishedChangesWithUnsavedChanges: 'سيؤدي هذا إلى حذف جميع التغييرات غير المنشورة لهذا الإدخال وكذلك التغييرات غير المحفوظة من الجلسة الحالية. هل ما زلت تريد الحذف؟',
+            onDeleteUnpublishedChanges: 'سيتم حذف جميع التغييرات غير المنشورة لهذا الإدخال. هل ما زلت تريد الحذف؟',
+            loadingEntry: 'جاري تحميل الإدخال...',
+            confirmLoadBackup: 'تم استرداد نسخة محلية لهذا الإدخال، هل ترغب في استخدامها؟'
+          },
+          editorToolbar: {
+            publishing: 'جاري النشر...',
+            publish: 'نشر',
+            published: 'تم النشر',
+            unpublish: 'إلغاء النشر',
+            duplicate: 'تكرار',
+            unpublishing: 'جاري إلغاء النشر...',
+            publishAndCreateNew: 'نشر وإنشاء جديد',
+            publishAndDuplicate: 'نشر وتكرار',
+            deleteUnpublishedChanges: 'حذف التغييرات غير المنشورة',
+            deleteUnpublishedEntry: 'حذف الإدخال غير المنشور',
+            deletePublishedEntry: 'حذف الإدخال المنشور',
+            deleteEntry: 'حذف الإدخال',
+            saving: 'جاري الحفظ...',
+            save: 'حفظ',
+            statusInfoTooltipDraft: 'الإدخال في حالة مسودة. لإنهائه وإرساله للمراجعة، غير الحالة إلى "في انتظار المراجعة"',
+            statusInfoTooltipInReview: 'الإدخال قيد المراجعة، لا يلزم اتخاذ إجراء آخر. ومع ذلك، يمكنك إجراء تغييرات إضافية بينما هو قيد المراجعة.',
+            deleting: 'جاري الحذف...',
+            updating: 'جاري التحديث...',
+            status: 'الحالة: %{status}',
+            backCollection: ' كتابة في مجموعة %{collectionLabel}',
+            unsavedChanges: 'تغييرات غير محفوظة',
+            changesSaved: 'تم حفظ التغييرات',
+            draft: 'مسودة',
+            inReview: 'قيد المراجعة',
+            ready: 'جاهز',
+            publishNow: 'نشر الآن',
+            deployPreviewPendingButtonLabel: 'التحقق من المعاينة',
+            deployPreviewButtonLabel: 'عرض المعاينة',
+            deployButtonLabel: 'عرض المنشور'
+          },
+          editorWidgets: {
+            markdown: {
+              richText: 'نص منسق',
+              markdown: 'Markdown'
+            },
+            image: {
+              choose: 'اختر صورة',
+              chooseDifferent: 'اختر صورة مختلفة',
+              remove: 'إزالة الصورة'
+            },
+            file: {
+              choose: 'اختر ملف',
+              chooseDifferent: 'اختر ملف مختلف',
+              remove: 'إزالة الملف'
+            },
+            unknownControl: {
+              noControl: "لا يوجد تحكم للـ widget '%{widget}'."
+            },
+            unknownPreview: {
+              noPreview: "لا توجد معاينة للـ widget '%{widget}'."
+            },
+            headingOptions: {
+              headingOne: 'عنوان 1',
+              headingTwo: 'عنوان 2',
+              headingThree: 'عنوان 3',
+              headingFour: 'عنوان 4',
+              headingFive: 'عنوان 5',
+              headingSix: 'عنوان 6'
+            },
+            datetime: {
+              now: 'الآن'
+            }
+          }
+        },
+        mediaLibrary: {
+          mediaLibraryCard: {
+            draft: 'مسودة'
+          },
+          mediaLibrary: {
+            onDelete: 'هل أنت متأكد أنك تريد حذف الوسائط المحددة؟',
+            fileTooLarge: 'الملف كبير جدًا.\nتم تكوين النظام لعدم السماح بالملفات الأكبر من %{size} كيلوبايت.'
+          },
+          mediaLibraryModal: {
+            loading: 'جاري التحميل...',
+            noResults: 'لا توجد نتائج.',
+            noAssetsFound: 'لم يتم العثور على أصول.',
+            noImagesFound: 'لم يتم العثور على صور.',
+            private: 'خاص ',
+            images: 'صور',
+            mediaAssets: 'أصول الوسائط',
+            search: 'بحث...',
+            uploading: 'جاري الرفع...',
+            upload: 'رفع جديد',
+            download: 'تنزيل',
+            deleting: 'جاري الحذف...',
+            deleteSelected: 'حذف المحدد',
+            chooseSelected: 'اختيار المحدد'
+          }
+        },
+        ui: {
+          default: {
+            goBackToSite: 'العودة إلى الموقع'
+          },
+          errorBoundary: {
+            title: 'خطأ',
+            details: 'حدث خطأ - يرجى ',
+            reportIt: 'الإبلاغ عنه.',
+            detailsHeading: 'تفاصيل',
+            privacyWarning: 'فتح مشكلة يملأها مسبقًا برسالة الخطأ والبيانات التشخيصية.\nيرجى التحقق من صحة البيانات وحذف البيانات الحساسة إن وجدت.',
+            recoveredEntry: {
+              heading: 'مستند مستعاد',
+              warning: 'يرجى نسخ/لصق هذا في مكان ما قبل الانتقال!',
+              copyButtonLabel: 'نسخ إلى الحافظة'
+            }
+          },
+          settingsDropdown: {
+            logOut: 'تسجيل الخروج'
+          },
+          toast: {
+            onFailToLoadEntries: 'فشل في تحميل الإدخال: %{details}',
+            onFailToLoadDeployPreview: 'فشل في تحميل المعاينة: %{details}',
+            onFailToPersist: 'فشل في الاحتفاظ بالإدخال: %{details}',
+            onFailToDelete: 'فشل في حذف الإدخال: %{details}',
+            onFailToUpdateStatus: 'فشل في تحديث الحالة: %{details}',
+            missingRequiredField: 'عفوًا، لقد فاتك حقل مطلوب. يرجى الإكمال قبل الحفظ.',
+            entrySaved: 'تم حفظ الإدخال',
+            entryPublished: 'تم نشر الإدخال',
+            entryUnpublished: 'تم إلغاء نشر الإدخال',
+            onFailToPublishEntry: 'فشل في نشر الإدخال: %{details}',
+            onFailToUnpublishEntry: 'فشل في إلغاء نشر الإدخال: %{details}',
+            entryUpdated: 'تم تحديث حالة الإدخال',
+            onDeleteUnpublishedChanges: 'تم حذف التغييرات غير المنشورة',
+            onFailToAuth: '%{details}'
+          }
+        },
+        workflow: {
+          workflow: {
+            loading: 'جاري تحميل مدخلات سير العمل التحريري',
+            workflowHeading: 'سير العمل التحريري',
+            newPost: 'منشور جديد',
+            description: '%{smart_count} إدخال في انتظار المراجعة، %{readyCount} جاهز للنشر. |||| %{smart_count} إدخالات في انتظار المراجعة، %{readyCount} جاهز للنشر. ',
+            dateFormat: 'MMMM D'
+          },
+          workflowCard: {
+            lastChange: '%{date} بواسطة %{author}',
+            lastChangeNoAuthor: '%{date}',
+            lastChangeNoDate: 'بواسطة %{author}',
+            deleteChanges: 'حذف التغييرات',
+            deleteNewEntry: 'حذف الإدخال الجديد',
+            publishChanges: 'نشر التغييرات',
+            publishNewEntry: 'نشر الإدخال الجديد'
+          },
+          workflowList: {
+            onDeleteEntry: 'هل أنت متأكد أنك تريد حذف هذا الإدخال؟',
+            onPublishEntry: 'هل أنت متأكد أنك تريد نشر هذا الإدخال؟',
+            draftHeader: 'مسودات',
+            inReviewHeader: 'قيد المراجعة',
+            readyHeader: 'جاهز',
+            currentEntries: '%{smart_count} إدخال |||| %{smart_count} إدخالات'
+          }
+        }
+      };
+
+      // انتظار تحميل النظام بالكامل
+      document.addEventListener('DOMContentLoaded', function() {
+        // تهيئة النظام
+        window.CMS.registerLocale('ar', locale);
+        
+        window.CMS.init();
+      });
+    }
+  </script>
+</body>
+</html>
+

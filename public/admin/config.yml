@@ -1,0 +1,160 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+site_url: "https://your-netlify-site-url.netlify.app"
+display_url: "https://your-netlify-site-url.netlify.app"
+logo_url: "/uploads/logo.png"
+
+locale: "ar"
+
+collections:
+  - name: "projects"
+    label: "أعمالنا"
+    folder: "content/projects"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "العنوان", name: "title", widget: "string" }
+      - { label: "الوصف", name: "description", widget: "text" }
+      - { label: "الفئة", name: "category", widget: "select", options: ["سكني", "تجاري", "فيلا", "مكتب", "فندق", "مطعم"] }
+      - { label: "المساحة", name: "area", widget: "string" }
+      - { label: "المدة", name: "duration", widget: "string" }
+      - { label: "السنة", name: "year", widget: "string" }
+      - { label: "العميل", name: "client", widget: "string" }
+      - { label: "الصورة الرئيسية", name: "mainImage", widget: "image" }
+      - { label: "معرض الصور", name: "gallery", widget: "list", field: { label: "صورة", name: "image", widget: "image" } }
+      - { label: "التفاصيل", name: "details", widget: "markdown" }
+      - { label: "الميزات", name: "features", widget: "list", field: { label: "ميزة", name: "feature", widget: "string" } }
+      - { label: "تاريخ النشر", name: "date", widget: "datetime" }
+  
+  - name: "products"
+    label: "المنتجات"
+    folder: "content/products"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "العنوان", name: "title", widget: "string" }
+      - { label: "الوصف", name: "description", widget: "text" }
+      - { label: "السعر", name: "price", widget: "number" }
+      - { label: "الفئة", name: "category", widget: "select", options: ["أثاث", "إضاءة", "ديكور", "أرضيات", "ستائر", "أخرى"] }
+      - { label: "الصورة الرئيسية", name: "mainImage", widget: "image" }
+      - { label: "معرض الصور", name: "gallery", widget: "list", field: { label: "صورة", name: "image", widget: "image" } }
+      - { label: "التفاصيل", name: "details", widget: "markdown" }
+      - { label: "المواصفات", name: "specifications", widget: "list", fields: [
+          { label: "الخاصية", name: "property", widget: "string" },
+          { label: "القيمة", name: "value", widget: "string" }
+        ] }
+      - { label: "متوفر", name: "available", widget: "boolean", default: true }
+      - { label: "تاريخ النشر", name: "date", widget: "datetime" }
+  
+  - name: "collections"
+    label: "المجموعات"
+    folder: "content/collections"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "العنوان", name: "title", widget: "string" }
+      - { label: "الوصف", name: "description", widget: "text" }
+      - { label: "الصورة الرئيسية", name: "mainImage", widget: "image" }
+      - { label: "المنتجات", name: "products", widget: "relation", collection: "products", search_fields: ["title"], value_field: "{{slug}}", display_fields: ["title"], multiple: true }
+      - { label: "تاريخ النشر", name: "date", widget: "datetime" }
+  
+  - name: "pages"
+    label: "الصفحات"
+    files:
+      - label: "الصفحة الرئيسية"
+        name: "home"
+        file: "content/pages/home.md"
+        fields:
+          - { label: "العنوان الرئيسي", name: "title", widget: "string" }
+          - { label: "الوصف", name: "description", widget: "text" }
+          - { label: "صورة الخلفية", name: "backgroundImage", widget: "image" }
+          - { label: "المحتوى", name: "content", widget: "markdown" }
+          - label: "الأقسام"
+            name: "sections"
+            widget: "list"
+            fields:
+              - { label: "العنوان", name: "title", widget: "string" }
+              - { label: "الوصف", name: "description", widget: "text" }
+              - { label: "الصورة", name: "image", widget: "image", required: false }
+              - { label: "الرابط", name: "link", widget: "string", required: false }
+              - { label: "نص الزر", name: "buttonText", widget: "string", required: false }
+      
+      - label: "من نحن"
+        name: "about"
+        file: "content/pages/about.md"
+        fields:
+          - { label: "العنوان", name: "title", widget: "string" }
+          - { label: "الوصف", name: "description", widget: "text" }
+          - { label: "الصورة الرئيسية", name: "mainImage", widget: "image" }
+          - { label: "المحتوى", name: "content", widget: "markdown" }
+          - label: "فريق العمل"
+            name: "team"
+            widget: "list"
+            fields:
+              - { label: "الاسم", name: "name", widget: "string" }
+              - { label: "المنصب", name: "position", widget: "string" }
+              - { label: "الصورة", name: "image", widget: "image" }
+              - { label: "نبذة", name: "bio", widget: "text" }
+      
+      - label: "اتصل بنا"
+        name: "contact"
+        file: "content/pages/contact.md"
+        fields:
+          - { label: "العنوان", name: "title", widget: "string" }
+          - { label: "الوصف", name: "description", widget: "text" }
+          - { label: "العنوان", name: "address", widget: "string" }
+          - { label: "البريد الإلكتروني", name: "email", widget: "string" }
+          - { label: "رقم الهاتف", name: "phone", widget: "string" }
+          - { label: "ساعات العمل", name: "workingHours", widget: "string" }
+          - { label: "رابط الخريطة", name: "mapUrl", widget: "string" }
+  
+  - name: "settings"
+    label: "الإعدادات"
+    files:
+      - label: "القائمة الرئيسية"
+        name: "navigation"
+        file: "content/settings/navigation.md"
+        fields:
+          - label: "عناصر القائمة"
+            name: "menuItems"
+            widget: "list"
+            fields:
+              - { label: "العنوان", name: "title", widget: "string" }
+              - { label: "الرابط", name: "url", widget: "string" }
+              - label: "القائمة الفرعية"
+                name: "submenu"
+                widget: "list"
+                required: false
+                fields:
+                  - { label: "العنوان", name: "title", widget: "string" }
+                  - { label: "الرابط", name: "url", widget: "string" }
+      
+      - label: "معلومات الاتصال"
+        name: "contact"
+        file: "content/settings/contact.md"
+        fields:
+          - { label: "البريد الإلكتروني", name: "email", widget: "string" }
+          - { label: "رقم الهاتف", name: "phone", widget: "string" }
+          - { label: "العنوان", name: "address", widget: "string" }
+          - label: "وسائل التواصل الاجتماعي"
+            name: "socialMedia"
+            widget: "list"
+            fields:
+              - { label: "المنصة", name: "platform", widget: "select", options: ["facebook", "twitter", "instagram", "linkedin", "youtube", "tiktok"] }
+              - { label: "الرابط", name: "url", widget: "string" }
+      
+      - label: "الشعار والألوان"
+        name: "branding"
+        file: "content/settings/branding.md"
+        fields:
+          - { label: "الشعار", name: "logo", widget: "image" }
+          - { label: "الشعار المصغر", name: "favicon", widget: "image" }
+          - { label: "اللون الرئيسي", name: "primaryColor", widget: "color" }
+          - { label: "اللون الثانوي", name: "secondaryColor", widget: "color" }
+          - { label: "لون الخلفية", name: "backgroundColor", widget: "color" }
+          - { label: "لون النص", name: "textColor", widget: "color" }
+
